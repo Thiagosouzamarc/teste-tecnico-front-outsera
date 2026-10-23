@@ -1,0 +1,19 @@
+mat-grid-list {
+  width: 80%;
+  margin: 0 auto;
+}
+
+mat-grid-tile {
+  overflow: visible;
+}
+
+mat-grid-tile app-years-with-winners,
+mat-grid-tile app-top-studios,
+mat-grid-tile app-interval-bt-wins,
+mat-grid-tile app-winner-by-years {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}

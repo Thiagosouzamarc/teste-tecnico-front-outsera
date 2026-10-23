@@ -1,0 +1,16 @@
+@use '../../shared/styles/styles-shared.scss';
+
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-form mat-form-field {
+  margin-bottom: 0;
+}
+
+.search-button {
+  margin-top: -20px;
+}

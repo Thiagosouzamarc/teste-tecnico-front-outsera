@@ -1,0 +1,79 @@
+<div class="shared-table-host">
+  <div class="table-container mat-elevation-z8">
+    <mat-card>
+      <mat-card-header>
+        <div mat-card-avatar></div>
+        <mat-card-title>Todos os filmes</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="search()" class="search-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Ano</mat-label>
+
+            <input matInput type="number" formControlName="year" placeholder="Digite o ano" />
+
+            <mat-error *ngIf="form.get('year')?.hasError('min')">
+              Informe um ano válido.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Vencedores</mat-label>
+            <mat-select formControlName="winner">
+              <mat-option *ngFor="let win of vencedor" [value]="win.value">
+                {{ win.viewValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button matSuffix mat-icon-button type="submit" aria-label="Buscar" [disabled]="form.invalid">
+              <mat-icon>search</mat-icon>
+            </button>
+        </form>
+        <table mat-table
+        [dataSource]="listMovie.content">
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> id </th>
+            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ano">
+            <th mat-header-cell *matHeaderCellDef> ano </th>
+            <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="título">
+            <th mat-header-cell *matHeaderCellDef> título </th>
+            <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="estudios">
+            <th mat-header-cell *matHeaderCellDef> estudios </th>
+            <td mat-cell *matCellDef="let element"> {{element.studios}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="produtores">
+            <th mat-header-cell *matHeaderCellDef> produtores </th>
+            <td mat-cell *matCellDef="let element"> {{element.producers}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="vencedores">
+            <th mat-header-cell *matHeaderCellDef> vencedores </th>
+            <td mat-cell *matCellDef="let element"> {{element.winner}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator [length]="listMovie.totalElements"
+          [pageIndex]="pageIndex"
+          [pageSize]="itemPerPage"
+          [pageSizeOptions]="[10, 20, 50]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
