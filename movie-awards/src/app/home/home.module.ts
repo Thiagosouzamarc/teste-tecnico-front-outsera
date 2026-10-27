@@ -17,11 +17,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   declarations: [
     HomeComponent,
     DashboardComponent,
-    ListComponent,
     YearsWithWinnersComponent,
     IntervalBtWinsComponent,
-    TopStudiosComponent,
-    WinnerByYearsComponent
+    TopStudiosComponent
   ],
   imports: [
     CommonModule,
@@ -29,7 +27,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HomeRoutingModule,
     ComponentsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ListComponent,
+    WinnerByYearsComponent
   ],
   providers: []
 })

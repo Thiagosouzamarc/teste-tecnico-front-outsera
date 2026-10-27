@@ -1,14 +1,13 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { FormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatSort } from '@angular/material/sort';
 import { of, throwError } from 'rxjs';
 
 import { MoviesServiceService } from '../../shared/services/movies-service.service';
 import { ListMovie } from '../../shared/model/list.movie';
 import { ListComponent } from './list.component';
+import { PageEvent } from '@angular/material/paginator';
 
 describe('ListComponent', () => {
   let component: ListComponent;
@@ -16,9 +15,7 @@ describe('ListComponent', () => {
   let moviesService: {
     getListMovies: jest.Mock;
   };
-  let snackBar: {
-    open: jest.Mock;
-  };
+  let snackBar: MatSnackBar;
 
   const mockMovies: ListMovie = {
     content: [
@@ -52,63 +49,49 @@ describe('ListComponent', () => {
       getListMovies: jest.fn().mockReturnValue(of(mockMovies)),
     };
 
-    snackBar = {
-      open: jest.fn(),
-    };
-
     await TestBed.configureTestingModule({
-      declarations: [ListComponent],
-      imports: [ReactiveFormsModule],
+      imports: [ListComponent],
       providers: [
         FormBuilder,
         {
           provide: MoviesServiceService,
           useValue: moviesService,
         },
-        {
-          provide: MatSnackBar,
-          useValue: snackBar,
-        },
       ],
-    })
-      .overrideComponent(ListComponent, {
-        set: {
-          template: '',
-          styles: [],
-        },
-      })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ListComponent);
     component = fixture.componentInstance;
+    snackBar = fixture.debugElement.injector.get(MatSnackBar);
+    jest.spyOn(snackBar, 'open');
   });
 
-  it('deve criar o componente', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve inicializar o formulário com os campos year e winner', () => {
+  it('should initialize the form with year and winner fields', () => {
     expect(component.form).toBeTruthy();
     expect(component.form.get('year')?.value).toBeNull();
     expect(component.form.get('winner')?.value).toBeNull();
   });
 
-  it('deve inicializar a paginação com os valores padrão', () => {
+  it('should initialize pagination with the default values', () => {
     expect(component.pageIndex).toBe(0);
     expect(component.itemPerPage).toBe(10);
   });
 
-  it('deve carregar os filmes ao inicializar', () => {
+  it('should load movies on initialization', () => {
     expect(moviesService.getListMovies).toHaveBeenCalledWith(
       0,
       10,
       null,
       null
     );
-    expect(component.listMovie).toEqual(mockMovies);
+    expect(component.listMovie()).toEqual(mockMovies);
   });
 
-  it('deve atualizar a lista de filmes ao chamar loadMovie', () => {
+  it('should update the movie list when loadMovie is called', () => {
     const updatedMovies: ListMovie = {
       ...mockMovies,
       content: [
@@ -135,28 +118,71 @@ describe('ListComponent', () => {
       null,
       null
     );
-    expect(component.listMovie).toEqual(updatedMovies);
+    expect(component.listMovie()).toEqual(updatedMovies);
     expect(component.pageIndex).toBe(1);
     expect(component.itemPerPage).toBe(20);
   });
 
-  it('deve enviar os filtros de ano e vencedor ao serviço', () => {
+  it('should apply filters only after the search is submitted', () => {
     component.form.patchValue({
       year: 2000,
-      winner: 'true',
+      winner: true,
     });
 
-    component.loadMovie();
+    expect(moviesService.getListMovies).toHaveBeenLastCalledWith(0, 10, null, null);
+
+    component.search();
 
     expect(moviesService.getListMovies).toHaveBeenLastCalledWith(
       0,
       10,
-      'true',
+      true,
       2000
     );
   });
 
-  it('deve exibir snackbar quando não encontrar filmes', () => {
+  it('should update the table rows when the search button is clicked', () => {
+    fixture.detectChanges();
+    moviesService.getListMovies.mockClear();
+
+    component.form.patchValue({
+      year: 2000,
+      winner: true,
+    });
+    fixture.detectChanges();
+
+    expect(moviesService.getListMovies).not.toHaveBeenCalled();
+
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector(
+      'button[type="submit"]',
+    );
+    button.click();
+    fixture.detectChanges();
+
+    expect(moviesService.getListMovies).toHaveBeenCalledWith(0, 10, true, 2000);
+    expect(fixture.nativeElement.querySelectorAll('tbody tr').length).toBe(2);
+  });
+
+  it('should make a single request when the reset button is clicked', () => {
+    fixture.detectChanges();
+    moviesService.getListMovies.mockClear();
+
+    component.form.patchValue({
+      year: 2000,
+      winner: true,
+    });
+    fixture.detectChanges();
+
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector(
+      'button[aria-label="Reset"]',
+    );
+    button.click();
+
+    expect(moviesService.getListMovies).toHaveBeenCalledTimes(1);
+    expect(moviesService.getListMovies).toHaveBeenCalledWith(0, 10, null, null);
+  });
+
+  it('should display a snackbar when no movies are found', () => {
     const emptyResult: ListMovie = {
       content: [],
       totalElements: 0,
@@ -176,10 +202,10 @@ describe('ListComponent', () => {
       'Fechar',
       { duration: 5000 }
     );
-    expect(component.listMovie).toEqual(emptyResult);
+    expect(component.listMovie()).toEqual(emptyResult);
   });
 
-  it('deve exibir snackbar quando ocorrer erro ao carregar filmes', () => {
+  it('should display a snackbar when loading movies fails', () => {
     moviesService.getListMovies.mockReturnValue(
       throwError(() => new Error('Erro na API'))
     );
@@ -193,7 +219,7 @@ describe('ListComponent', () => {
     );
   });
 
-  it('deve atualizar a página e o tamanho ao mudar a paginação', () => {
+  it('should update the page index and size when pagination changes', () => {
     const event: PageEvent = {
       pageIndex: 2,
       pageSize: 20,
@@ -220,11 +246,18 @@ describe('ListComponent', () => {
     expect(component.itemPerPage).toBe(20);
   });
 
-  it('deve reiniciar a página ao pesquisar', () => {
-    moviesService.getListMovies.mockReturnValue(
+  it('should reset the page index when searching', () => {
+    moviesService.getListMovies.mockReturnValueOnce(
       of({
         ...mockMovies,
         number: 2,
+        size: 20,
+      }),
+    );
+    moviesService.getListMovies.mockReturnValue(
+      of({
+        ...mockMovies,
+        number: 0,
         size: 20,
       }),
     );
@@ -234,15 +267,17 @@ describe('ListComponent', () => {
     expect(component.pageIndex).toBe(2);
     expect(component.itemPerPage).toBe(20);
 
+    component.search();
+
     expect(moviesService.getListMovies).toHaveBeenLastCalledWith(
-      2,
+      0,
       20,
       null,
       null,
     );
   });
 
-  it('deve chamar o serviço com os parâmetros informados em loadMovie', () => {
+  it('should call the service with the parameters passed to loadMovie', () => {
     component.loadMovie(2, 50);
 
     expect(moviesService.getListMovies).toHaveBeenLastCalledWith(
@@ -253,7 +288,7 @@ describe('ListComponent', () => {
     );
   });
 
-  it('deve abrir snackbar com a mensagem e ação informadas', () => {
+  it('should open a snackbar with the provided message and action', () => {
     component.openSnackBar('Mensagem de teste', 'OK');
 
     expect(snackBar.open).toHaveBeenCalledWith(
@@ -263,23 +298,10 @@ describe('ListComponent', () => {
     );
   });
 
-  it('deve associar paginator e sort ao dataSource após a inicialização da view', () => {
-    const paginatorMock = {} as MatPaginator;
-    const sortMock = {} as MatSort;
-
-    component.paginator = paginatorMock;
-    component.sort = sortMock;
-
-    component.ngAfterViewInit();
-
-    expect(component.dataSource.paginator).toBe(paginatorMock);
-    expect(component.dataSource.sort).toBe(sortMock);
-  });
-
-  it('deve aplicar os filtros de ano e vencedor ao pesquisar', () => {
+  it('should apply the year and winner filters when searching', () => {
     component.form.patchValue({
       year: 2000,
-      winner: 'true',
+      winner: true,
     });
 
     component.search();
@@ -287,21 +309,21 @@ describe('ListComponent', () => {
     expect(moviesService.getListMovies).toHaveBeenLastCalledWith(
       0,
       10,
-      'true',
+      true,
       2000,
     );
   });
 
-  it('deve chamar firstPage do paginator ao pesquisar', () => {
+  it('should return to the first page when searching', () => {
     const paginatorMock = {
-      firstPage: jest.fn(),
-    } as unknown as MatPaginator;
+      pageIndex: 2,
+    };
 
-    component.paginator = paginatorMock;
+    component.paginator = paginatorMock as ListComponent['paginator'];
 
     component.search();
 
-    expect(paginatorMock.firstPage).toHaveBeenCalledTimes(1);
+    expect(paginatorMock.pageIndex).toBe(0);
 
     expect(moviesService.getListMovies).toHaveBeenLastCalledWith(
       0,

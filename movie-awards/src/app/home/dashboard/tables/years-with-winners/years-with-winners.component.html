@@ -3,18 +3,18 @@
     <mat-card>
       <mat-card-header>
         <div mat-card-avatar></div>
-        <mat-card-title>Anos com mais de um vencedor</mat-card-title>
+        <mat-card-title>List years with multiple winners</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <table mat-table [dataSource]="yearWinners.years">
 
-          <ng-container matColumnDef="ano">
-            <th mat-header-cell *matHeaderCellDef> ano </th>
+          <ng-container matColumnDef="year">
+            <th mat-header-cell *matHeaderCellDef> Year </th>
             <td mat-cell *matCellDef="let element"> {{element.year}} </td>
           </ng-container>
 
-          <ng-container matColumnDef="quantidade de ganhadores">
-            <th mat-header-cell *matHeaderCellDef> quantidade de ganhadores </th>
+          <ng-container matColumnDef="winnerCount">
+            <th mat-header-cell *matHeaderCellDef> Winner Count </th>
             <td mat-cell *matCellDef="let element"> {{element.winnerCount}} </td>
           </ng-container>
 

@@ -66,21 +66,21 @@ describe('IntervalBtWinsComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('deve criar o componente', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve inicializar os intervalos como arrays vazios', () => {
-    // O construtor chama a API; verificamos o estado inicial
-    // antes de executar uma nova chamada manual.
+  it('should initialize the intervals with empty arrays', () => {
+    // The constructor calls the API; verify the initial state before making
+    // another manual request.
     expect(component.intervalWins).toEqual(mockIntervalWins);
   });
 
-  it('deve chamar o serviço ao inicializar o componente', () => {
+  it('should call the service when the component initializes', () => {
     expect(moviesService.getIntervalBetw).toHaveBeenCalled();
   });
 
-  it('deve carregar os intervalos mínimo e máximo', () => {
+  it('should load the minimum and maximum intervals', () => {
     component.loadTopStudios();
 
     expect(moviesService.getIntervalBetw).toHaveBeenCalledTimes(2);
@@ -89,7 +89,7 @@ describe('IntervalBtWinsComponent', () => {
     expect(component.intervalWins.max).toHaveLength(1);
   });
 
-  it('deve exibir snackbar quando ocorrer erro ao carregar os intervalos', () => {
+  it('should display a snackbar when loading intervals fails', () => {
     moviesService.getIntervalBetw.mockReturnValue(
       throwError(() => new Error('Erro na API'))
     );
@@ -103,7 +103,7 @@ describe('IntervalBtWinsComponent', () => {
     );
   });
 
-  it('deve abrir o snackbar com a mensagem e a ação informadas', () => {
+  it('should open a snackbar with the provided message and action', () => {
     component.openSnackBar('Mensagem de teste', 'OK');
 
     expect(snackBar.open).toHaveBeenCalledWith(

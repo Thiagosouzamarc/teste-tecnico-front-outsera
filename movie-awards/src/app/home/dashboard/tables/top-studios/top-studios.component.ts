@@ -4,6 +4,7 @@ import { MoviesServiceService } from './../../../../shared/services/movies-servi
 import { Component } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-top-studios',
   templateUrl: './top-studios.component.html',
   styleUrls: ['./top-studios.component.scss'],
@@ -13,7 +14,7 @@ export class TopStudiosComponent {
     studios: [],
   };
 
-  displayedColumns: string[] = ['nome', 'quantidade'];
+  displayedColumns: string[] = ['name', 'winCount'];
 
   constructor(
     private moviesServiceService: MoviesServiceService,

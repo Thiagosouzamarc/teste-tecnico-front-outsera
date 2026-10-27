@@ -4,6 +4,7 @@ import { MoviesServiceService } from './../../../../shared/services/movies-servi
 import { Component } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-interval-bt-wins',
   templateUrl: './interval-bt-wins.component.html',
   styleUrls: ['./interval-bt-wins.component.scss'],
@@ -14,7 +15,7 @@ export class IntervalBtWinsComponent {
     max: []
   };
 
-  displayedColumns: string[] = ['produtor', 'intervalo', 'ano ganhador', 'próximo ano ganhador'];
+  displayedColumns: string[] = ['producer', 'interval', 'previousWin', 'followingWin'];
 
   constructor(
     private moviesServiceService: MoviesServiceService,

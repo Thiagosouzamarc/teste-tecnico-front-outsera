@@ -4,6 +4,7 @@ import { MoviesServiceService } from './../../../../shared/services/movies-servi
 import { Component } from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-years-with-winners',
   templateUrl: './years-with-winners.component.html',
   styleUrls: ['./years-with-winners.component.scss']
@@ -14,7 +15,7 @@ export class YearsWithWinnersComponent {
   yearWinners: YearsWinners = {
     years : []
   };
-  displayedColumns: string[] = ['ano', 'quantidade de ganhadores'];
+  displayedColumns: string[] = ['year', 'winnerCount'];
 
   constructor(
     private moviesServiceService: MoviesServiceService,

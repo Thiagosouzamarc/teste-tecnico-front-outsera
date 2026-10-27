@@ -25,11 +25,11 @@ describe('MoviesServiceService', () => {
     httpMock.verify();
   });
 
-  it('deve ser criado', () => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('deve buscar anos com múltiplos vencedores', () => {
+  it('should fetch years with multiple winners', () => {
     const mockData = {
       years: [{ year: 1986, winnerCount: 2 }],
     };
@@ -44,7 +44,7 @@ describe('MoviesServiceService', () => {
     req.flush(mockData);
   });
 
-  it('deve buscar os estúdios com mais vitórias', () => {
+  it('should fetch studios with the most wins', () => {
     const mockData = {
       studios: [{ name: 'Studio A', winCount: 5 }],
     };
@@ -59,7 +59,7 @@ describe('MoviesServiceService', () => {
     req.flush(mockData);
   });
 
-  it('deve buscar os intervalos de vitórias dos produtores', () => {
+  it('should fetch producer win intervals', () => {
     const mockData = {
       min: [],
       max: [],
@@ -75,7 +75,7 @@ describe('MoviesServiceService', () => {
     req.flush(mockData);
   });
 
-  it('deve buscar os vencedores de um ano específico', () => {
+  it('should fetch winners for a specific year', () => {
     const year = 2020;
     const mockData = [{ id: 1, year: 2020, title: 'Movie A', winner: true }];
 
@@ -89,7 +89,7 @@ describe('MoviesServiceService', () => {
     req.flush(mockData);
   });
 
-  it('deve buscar filmes com filtros de página, tamanho, vencedor e ano', () => {
+  it('should fetch movies with page, size, winner, and year filters', () => {
     const mockData = {
       content: [],
       totalElements: 0,
@@ -115,11 +115,13 @@ describe('MoviesServiceService', () => {
     req.flush(mockData);
   });
 
-  it('deve propagar erros HTTP', () => {
+  it('should propagate HTTP errors', () => {
     let receivedError: any;
 
     service.getTopStudios().subscribe({
-      next: () => fail('Era esperado um erro HTTP'),
+      next: () => {
+        throw new Error('Expected an HTTP error');
+      },
       error: (error) => {
         receivedError = error;
       },
@@ -135,15 +137,17 @@ describe('MoviesServiceService', () => {
     expect(receivedError.status).toBe(500);
   });
 
-  describe('cenários de erro catchError', () => {
+  describe('catchError scenarios', () => {
     const errorResponse = {
       status: 500,
       statusText: 'Internal Server Error',
     };
 
-    it('deve propagar erro em getYearsWinners', () => {
+    it('should propagate errors from getYearsWinners', () => {
       service.getYearsWinners().subscribe({
-        next: () => fail('Era esperado um erro HTTP'),
+        next: () => {
+          throw new Error('Expected an HTTP error');
+        },
         error: (error) => {
           expect(error.status).toBe(500);
         },
@@ -154,9 +158,11 @@ describe('MoviesServiceService', () => {
       req.flush('Erro interno', errorResponse);
     });
 
-    it('deve propagar erro em getTopStudios', () => {
+    it('should propagate errors from getTopStudios', () => {
       service.getTopStudios().subscribe({
-        next: () => fail('Era esperado um erro HTTP'),
+        next: () => {
+          throw new Error('Expected an HTTP error');
+        },
         error: (error) => {
           expect(error.status).toBe(500);
         },
@@ -167,9 +173,11 @@ describe('MoviesServiceService', () => {
       req.flush('Erro interno', errorResponse);
     });
 
-    it('deve propagar erro em getIntervalBetw', () => {
+    it('should propagate errors from getIntervalBetw', () => {
       service.getIntervalBetw().subscribe({
-        next: () => fail('Era esperado um erro HTTP'),
+        next: () => {
+          throw new Error('Expected an HTTP error');
+        },
         error: (error) => {
           expect(error.status).toBe(500);
         },
@@ -180,9 +188,11 @@ describe('MoviesServiceService', () => {
       req.flush('Erro interno', errorResponse);
     });
 
-    it('deve propagar erro em getWinByYear', () => {
+    it('should propagate errors from getWinByYear', () => {
       service.getWinByYear(2020).subscribe({
-        next: () => fail('Era esperado um erro HTTP'),
+        next: () => {
+          throw new Error('Expected an HTTP error');
+        },
         error: (error) => {
           expect(error.status).toBe(500);
         },
@@ -193,9 +203,11 @@ describe('MoviesServiceService', () => {
       req.flush('Erro interno', errorResponse);
     });
 
-    it('deve propagar erro em getListMovies', () => {
+    it('should propagate errors from getListMovies', () => {
       service.getListMovies(0, 10, true, 2020).subscribe({
-        next: () => fail('Era esperado um erro HTTP'),
+        next: () => {
+          throw new Error('Expected an HTTP error');
+        },
         error: (error) => {
           expect(error.status).toBe(500);
         },

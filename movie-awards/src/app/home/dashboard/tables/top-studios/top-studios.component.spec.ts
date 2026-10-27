@@ -58,15 +58,15 @@ describe('TopStudiosComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('deve criar o componente', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve chamar getTopStudios ao inicializar', () => {
+  it('should call getTopStudios on initialization', () => {
     expect(moviesService.getTopStudios).toHaveBeenCalledTimes(1);
   });
 
-  it('deve ordenar os estúdios por quantidade de vitórias', () => {
+  it('should sort studios by win count', () => {
     expect(component.topStudios.studios).toEqual([
       { name: 'Studio A', winCount: 10 },
       { name: 'Studio B', winCount: 7 },
@@ -74,11 +74,11 @@ describe('TopStudiosComponent', () => {
     ]);
   });
 
-  it('deve retornar somente os três estúdios com mais vitórias', () => {
+  it('should return only the three studios with the most wins', () => {
     expect(component.topStudios.studios).toHaveLength(3);
   });
 
-  it('deve exibir uma mensagem quando ocorrer erro na API', () => {
+  it('should display a message when the API request fails', () => {
     moviesService.getTopStudios.mockReturnValue(
       throwError(() => new Error('Erro na API')),
     );
@@ -92,7 +92,7 @@ describe('TopStudiosComponent', () => {
     );
   });
 
-  it('deve permitir abrir uma notificação manualmente', () => {
+  it('should allow a notification to be opened manually', () => {
     component.openSnackBar('Mensagem de teste', 'Fechar');
 
     expect(snackBar.open).toHaveBeenCalledWith(

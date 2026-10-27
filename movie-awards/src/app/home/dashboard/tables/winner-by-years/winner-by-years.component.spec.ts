@@ -16,9 +16,7 @@ describe('WinnerByYearsComponent', () => {
     getWinByYear: jest.Mock;
   };
 
-  let snackBar: {
-    open: jest.Mock;
-  };
+  let snackBar: MatSnackBar;
 
   const mockWinners: WinnerYears[] = [
     {
@@ -44,72 +42,78 @@ describe('WinnerByYearsComponent', () => {
       getWinByYear: jest.fn().mockReturnValue(of(mockWinners)),
     };
 
-    snackBar = {
-      open: jest.fn(),
-    };
-
     await TestBed.configureTestingModule({
-      declarations: [WinnerByYearsComponent],
-      imports: [ReactiveFormsModule],
+      imports: [WinnerByYearsComponent],
       providers: [
         {
           provide: MoviesServiceService,
           useValue: moviesService,
         },
-        {
-          provide: MatSnackBar,
-          useValue: snackBar,
-        },
       ],
-    })
-      .overrideComponent(WinnerByYearsComponent, {
-        set: { template: '' },
-      })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(WinnerByYearsComponent);
     component = fixture.componentInstance;
+    snackBar = fixture.debugElement.injector.get(MatSnackBar);
+    jest.spyOn(snackBar, 'open');
   });
 
-  it('deve criar o componente', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve inicializar o formulário com o campo year vazio', () => {
+  it('should initialize the form with an empty year field', () => {
     expect(component.form).toBeTruthy();
     expect(component.form.get('year')?.value).toBeNull();
     expect(component.form.invalid).toBe(true);
   });
 
-  it('deve invalidar o formulário quando o ano estiver vazio', () => {
+  it('should invalidate the form when the year is empty', () => {
     component.form.controls['year'].setValue(null);
 
     expect(component.form.invalid).toBe(true);
     expect(component.form.controls['year'].hasError('required')).toBe(true);
   });
 
-  it('deve aceitar um ano com quatro dígitos', () => {
+  it('should accept a four-digit year', () => {
     component.form.controls['year'].setValue(2020);
 
     expect(component.form.controls['year'].valid).toBe(true);
   });
 
-  it('deve invalidar um ano que não tenha quatro dígitos', () => {
+  it('should reject a year that does not have four digits', () => {
     component.form.controls['year'].setValue(20);
 
     expect(component.form.controls['year'].hasError('pattern')).toBe(true);
   });
 
-  it('deve buscar os vencedores do ano informado', () => {
+  it('should fetch the winners for the specified year', () => {
     component.form.controls['year'].setValue(2020);
 
     component.loadWinByYear();
 
     expect(moviesService.getWinByYear).toHaveBeenCalledWith(2020);
-    expect(component.winnerYears).toEqual(mockWinners);
+    expect(component.winnerYears()).toEqual(mockWinners);
   });
 
-  it('deve exibir mensagem quando nenhum vencedor for encontrado', () => {
+  it('should update the table rows when the form is submitted', () => {
+    fixture.detectChanges();
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
+    input.value = '2020';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button[type="submit"]');
+    expect(button.disabled).toBe(false);
+    button.click();
+    fixture.detectChanges();
+
+    expect(moviesService.getWinByYear).toHaveBeenCalledWith(2020);
+    expect(fixture.nativeElement.querySelectorAll('tr[mat-row]').length).toBe(2);
+  });
+
+  it('should display a message when no winners are found', () => {
     moviesService.getWinByYear.mockReturnValue(of([]));
     component.form.controls['year'].setValue(2020);
 
@@ -121,10 +125,10 @@ describe('WinnerByYearsComponent', () => {
       { duration: 5000 },
     );
 
-    expect(component.winnerYears).toEqual([]);
+    expect(component.winnerYears()).toEqual([]);
   });
 
-  it('deve exibir mensagem quando ocorrer erro na API', () => {
+  it('should display a message when the API request fails', () => {
     moviesService.getWinByYear.mockReturnValue(
       throwError(() => new Error('Erro na API')),
     );
@@ -140,7 +144,7 @@ describe('WinnerByYearsComponent', () => {
     );
   });
 
-  it('deve abrir uma notificação manualmente', () => {
+  it('should open a notification manually', () => {
     component.openSnackBar('Mensagem de teste', 'Fechar');
 
     expect(snackBar.open).toHaveBeenCalledWith(

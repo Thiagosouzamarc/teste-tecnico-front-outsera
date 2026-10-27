@@ -3,35 +3,35 @@
     <mat-card>
       <mat-card-header>
         <div mat-card-avatar></div>
-        <mat-card-title>Intervalo entre vitórias</mat-card-title>
+        <mat-card-title>Producers with longest and shortest intervals between wins</mat-card-title>
       </mat-card-header>
       <mat-card-content>
 
         <mat-card>
           <mat-card-header>
             <div mat-card-avatar></div>
-            <mat-card-title>Menor Intervalo</mat-card-title>
+            <mat-card-title>Maximum Interval</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <table mat-table [dataSource]="intervalWins.min">
+            <table mat-table [dataSource]="intervalWins.max">
 
-              <ng-container matColumnDef="produtor">
-                <th mat-header-cell *matHeaderCellDef> produtor </th>
+              <ng-container matColumnDef="producer">
+                <th mat-header-cell *matHeaderCellDef> Producer </th>
                 <td mat-cell *matCellDef="let element"> {{element.producer}} </td>
               </ng-container>
 
-              <ng-container matColumnDef="intervalo">
-                <th mat-header-cell *matHeaderCellDef> intervalo </th>
+              <ng-container matColumnDef="interval">
+                <th mat-header-cell *matHeaderCellDef> Interval </th>
                 <td mat-cell *matCellDef="let element"> {{element.interval}} </td>
               </ng-container>
 
-              <ng-container matColumnDef="ano ganhador">
-                <th mat-header-cell *matHeaderCellDef> ano ganhador </th>
+              <ng-container matColumnDef="previousWin">
+                <th mat-header-cell *matHeaderCellDef> Previous win </th>
                 <td mat-cell *matCellDef="let element"> {{element.previousWin}} </td>
               </ng-container>
 
-              <ng-container matColumnDef="próximo ano ganhador">
-                <th mat-header-cell *matHeaderCellDef> próximo ano ganhador </th>
+              <ng-container matColumnDef="followingWin">
+                <th mat-header-cell *matHeaderCellDef> Following win </th>
                 <td mat-cell *matCellDef="let element"> {{element.followingWin}} </td>
               </ng-container>
 
@@ -44,28 +44,29 @@
         <mat-card class="margin-bt">
           <mat-card-header>
             <div mat-card-avatar></div>
-            <mat-card-title>Maior Intervalo</mat-card-title>
+            <mat-card-title>Minimum</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <table mat-table [dataSource]="intervalWins.max">
+            <table mat-table [dataSource]="intervalWins.min">
 
-              <ng-container matColumnDef="produtor">
-                <th mat-header-cell *matHeaderCellDef> produtor </th>
+              <ng-container matColumnDef="producer">
+                <th mat-header-cell *matHeaderCellDef> Producer </th>
                 <td mat-cell *matCellDef="let element"> {{element.producer}} </td>
               </ng-container>
 
-              <ng-container matColumnDef="intervalo">
-                <th mat-header-cell *matHeaderCellDef> intervalo </th>
+              <ng-container matColumnDef="interval">
+
+                <th mat-header-cell *matHeaderCellDef> Interval </th>
                 <td mat-cell *matCellDef="let element"> {{element.interval}} </td>
               </ng-container>
 
-              <ng-container matColumnDef="ano ganhador">
-                <th mat-header-cell *matHeaderCellDef> ano ganhador </th>
+              <ng-container matColumnDef="previousWin">
+                <th mat-header-cell *matHeaderCellDef> Previous win </th>
                 <td mat-cell *matCellDef="let element"> {{element.previousWin}} </td>
               </ng-container>
 
-              <ng-container matColumnDef="próximo ano ganhador">
-                <th mat-header-cell *matHeaderCellDef> próximo ano ganhador </th>
+              <ng-container matColumnDef="followingWin">
+                <th mat-header-cell *matHeaderCellDef> Following win </th>
                 <td mat-cell *matCellDef="let element"> {{element.followingWin}} </td>
               </ng-container>
 

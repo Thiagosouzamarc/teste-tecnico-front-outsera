@@ -1,18 +1,22 @@
 import { WinnerYears } from './../../../../shared/model/winner-years';
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MoviesServiceService } from '../../../../shared/services/movies-service.service';
+import { ComponentsModule } from '../../../../shared/components/components.module';
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, ComponentsModule],
   selector: 'app-winner-by-years',
   templateUrl: './winner-by-years.component.html',
   styleUrls: ['./winner-by-years.component.scss'],
 })
 export class WinnerByYearsComponent {
-  winnerYears: WinnerYears[] = [];
+  winnerYears = signal<WinnerYears[]>([]);
 
-  displayedColumns: string[] = ['id', 'ano', 'título', 'estudios', 'produtores'];
+  displayedColumns: string[] = ['id', 'year', 'title'];
 
   form!: FormGroup;
 
@@ -37,7 +41,7 @@ export class WinnerByYearsComponent {
         if (data.length === 0) {
           this.openSnackBar('Nenhum vencedor encontrado para o ano informado', 'Fechar');
         }
-        this.winnerYears = data;
+        this.winnerYears.set(data);
       },
       error: (err) => {
         this.openSnackBar('Erro ao buscar vencedores por ano', 'Fechar');

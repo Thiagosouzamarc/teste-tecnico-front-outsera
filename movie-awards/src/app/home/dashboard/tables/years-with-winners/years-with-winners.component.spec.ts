@@ -59,20 +59,20 @@ describe('YearsWithWinnersComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('deve criar o componente', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('deve chamar o serviço ao inicializar', () => {
+  it('should call the service on initialization', () => {
     expect(moviesService.getYearsWinners).toHaveBeenCalledTimes(1);
   });
 
-  it('deve carregar os anos com múltiplos vencedores', () => {
+  it('should load years with multiple winners', () => {
     expect(component.yearWinners).toEqual(mockYearsWinners);
     expect(component.yearWinners.years).toHaveLength(3);
   });
 
-  it('deve atualizar os dados ao chamar loadYearsWinners', () => {
+  it('should update the data when loadYearsWinners is called', () => {
     const updatedData: YearsWinners = {
       years: [{ year: 2020, winnerCount: 5 }],
     };
@@ -85,7 +85,7 @@ describe('YearsWithWinnersComponent', () => {
     expect(moviesService.getYearsWinners).toHaveBeenCalledTimes(2);
   });
 
-  it('deve exibir snackbar quando ocorrer erro ao carregar os anos', () => {
+  it('should display a snackbar when loading years fails', () => {
     moviesService.getYearsWinners.mockReturnValue(
       throwError(() => new Error('Erro na API'))
     );
@@ -99,7 +99,7 @@ describe('YearsWithWinnersComponent', () => {
     );
   });
 
-  it('deve abrir snackbar com a mensagem e ação informadas', () => {
+  it('should open a snackbar with the provided message and action', () => {
     component.openSnackBar('Mensagem de teste', 'OK');
 
     expect(snackBar.open).toHaveBeenCalledWith(

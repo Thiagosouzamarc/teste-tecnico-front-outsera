@@ -1,131 +1,59 @@
 # MovieAwards
 
-Aplicação desenvolvida com **Angular 15.2.11** para consulta de filmes e informações relacionadas aos vencedores do prêmio.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.4.
 
-## Pré-requisitos
+## Development server
 
-Antes de executar o projeto, certifique-se de ter instalado:
-
-- [Node.js](https://nodejs.org/)
-- npm, instalado junto com o Node.js
-- [Git](https://git-scm.com/)
-
-## Como executar o projeto
-
-### 1. Clonar o repositório
-
-No terminal, execute:
+To start a local development server, run:
 
 ```bash
-git clone URL_DO_REPOSITORIO
+ng serve
 ```
 
-Entre na pasta do projeto:
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## Code scaffolding
+
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
 
 ```bash
-cd movie-awards
+ng generate component component-name
 ```
 
-> Substitua `URL_DO_REPOSITORIO` pela URL do repositório Git.
-
-### 2. Instalar as dependências
-
-Execute o comando abaixo na raiz do projeto:
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
 ```bash
-npm install
+ng generate --help
 ```
 
-Esse comando instalará as dependências necessárias para executar a aplicação e os testes.
+## Building
 
-### 3. Iniciar o servidor de desenvolvimento
-
-Execute:
+To build the project run:
 
 ```bash
-npm start
+ng build
 ```
 
-O comando iniciará o servidor de desenvolvimento do Angular.
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-### 4. Acessar a aplicação
+## Running unit tests
 
-Abra o navegador e acesse:
-
-**http://localhost:4200/**
-
-A aplicação estará disponível localmente. Durante o desenvolvimento, as alterações nos arquivos de código serão refletidas automaticamente quando aplicável.
-
-Para encerrar o servidor, pressione `Ctrl + C` no terminal.
-
-## Tecnologias utilizadas
-
-- Angular 15.2.11
-- TypeScript 4.9
-- Angular Material
-- RxJS
-- Jest 29
-- jest-preset-angular
-
-## Testes unitários
-
-O projeto utiliza **Jest** para executar os testes unitários.
-
-### Executar os testes
+To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
 
 ```bash
-npm test
+ng test
 ```
 
-### Executar os testes em modo de observação
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
 
 ```bash
-npm run test:watch
+ng e2e
 ```
 
-Nesse modo, o Jest acompanha as alterações e pode executar novamente os testes conforme necessário.
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
-### Executar os testes com cobertura de código
+## Additional Resources
 
-```bash
-npm run test:coverage
-```
-
-O relatório de cobertura será gerado na pasta `coverage/`, permitindo verificar quais arquivos, funções, linhas e ramificações foram cobertos pelos testes.
-
-Se o relatório HTML estiver disponível, abra o arquivo:
-
-```text
-coverage/lcov-report/index.html
-```
-
-## Build da aplicação
-
-Para gerar a versão de produção, execute:
-
-```bash
-npm run build
-```
-
-Os arquivos compilados serão gerados na pasta `dist/`.
-
-Para compilar continuamente durante o desenvolvimento, execute:
-
-```bash
-npm run watch
-```
-
-## Ajuda adicional
-
-Para consultar os comandos disponíveis no Angular CLI, execute:
-
-```bash
-npx ng help
-```
-
-Documentação oficial:
-
-- [Angular](https://angular.dev/)
-- [Angular CLI](https://angular.dev/tools/cli)
-- [Jest](https://jestjs.io/)
-- [Angular Material](https://material.angular.io/)
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

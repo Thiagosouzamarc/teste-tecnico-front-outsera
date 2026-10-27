@@ -1,45 +1,46 @@
 import { MoviesServiceService } from '../../shared/services/movies-service.service';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, signal, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ListMovie } from '../../shared/model/list.movie';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ComponentsModule } from '../../shared/components/components.module';
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, ComponentsModule],
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss'],
 })
-export class ListComponent implements AfterViewInit {
-  listMovie: ListMovie = {
+export class ListComponent {
+  listMovie = signal<ListMovie>({
     content: [],
     number: 0,
-    size: 0
-  };
+    size: 10,
+    totalElements: 0,
+    totalPages: 0,
+    first: true,
+    last: true,
+  });
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  dataSource = new MatTableDataSource<any>([]);
-  @ViewChild(MatSort) sort!: MatSort;
 
-  displayedColumns: string[] = [
-    'id',
-    'ano',
-    'título',
-    'estudios',
-    'produtores',
-    'vencedores',
-  ];
+  displayedColumns: string[] = ['id', 'year', 'title', 'winner'];
 
   vencedor = [
-    {value: 'true', viewValue: 'Sim'},
-    {value: 'false', viewValue: 'Não'},
+    { value: true, viewValue: 'Yes' },
+    { value: false, viewValue: 'No' },
   ];
 
   form!: FormGroup;
   itemPerPage = 10;
   pageIndex = 0;
+  private appliedFilters: { year: number | null; winner: boolean | null } = {
+    year: null,
+    winner: null,
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -48,11 +49,6 @@ export class ListComponent implements AfterViewInit {
   ) {
     this.initForm();
     this.loadMovie();
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
   initForm() {
@@ -66,18 +62,24 @@ export class ListComponent implements AfterViewInit {
   }
 
   loadMovie(page: number = this.pageIndex, size: number = this.itemPerPage) {
-    const year = this.form?.controls['year']?.value;
-    const winner = this.form?.controls['winner']?.value;
-    this.moviesServiceService.getListMovies(page, size, winner, year).subscribe({
+    this.moviesServiceService.getListMovies(
+      page,
+      size,
+      this.appliedFilters.winner,
+      this.appliedFilters.year,
+    ).subscribe({
       next: (data: ListMovie) => {
         if (data.content.length === 0) {
-          this.openSnackBar('Nenhum filme encontrado com os filtros informados.', 'Fechar');
+          this.openSnackBar(
+            'Nenhum filme encontrado com os filtros informados.',
+            'Fechar',
+          );
         }
-        this.listMovie = data;
+        this.listMovie.set(data);
         this.pageIndex = data.number;
         this.itemPerPage = data.size;
       },
-      error: (err) => {
+      error: () => {
         this.openSnackBar('Erro ao carregar filmes.', 'Fechar');
       },
     });
@@ -91,12 +93,18 @@ export class ListComponent implements AfterViewInit {
   }
 
   search(): void {
-    this.pageIndex = 0;
-
-    if (this.paginator) {
-      this.paginator.firstPage();
+    if (this.form.invalid) {
+      return;
     }
 
+    this.appliedFilters = {
+      year: this.form.controls['year'].value,
+      winner: this.form.controls['winner'].value,
+    };
+    this.pageIndex = 0;
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+    }
     this.loadMovie(0, this.itemPerPage);
   }
 
@@ -104,5 +112,18 @@ export class ListComponent implements AfterViewInit {
     this.snackBar.open(message, action, {
       duration: 5000,
     });
+  }
+
+  resetForm(): void {
+    this.form.reset();
+    this.appliedFilters = {
+      year: null,
+      winner: null,
+    };
+    this.pageIndex = 0;
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+    }
+    this.loadMovie(0, this.itemPerPage);
   }
 }
